@@ -1,0 +1,87 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    {% if app.session.flashbag.peekAll|length > 0 %}
+        {% for type, messages in app.session.flashbag.all %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type ? type : '' }} fade-in">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+    
+    <div class="jumbotron vertical-center">
+        <div class="container-fluid">
+            <div class="container"><h2>Packing List <br>
+                    <small>PS {{ psRef }} </small></h2>
+                <div class="col-md-4 col-md-offset-8 text-right">
+                	<div class="dropdown">
+                      	<a href="{{ path('part_add') }}"><button type="button" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Create a new Part </button></a>
+                      	<a href="{{ path('packings', { 'id': id }) }}"><button type="button" class="btn btn-packings"><span class="glyphicon glyphicon-inbox"></span> Packings</button></a>
+                    </div>
+                    <hr></hr>
+                    <a href="{{ path('sheet', { 'id': id, 'status': 'details' }) }}"><button class="btn btn-secondary"><span class="glyphicon glyphicon-arrow-left"></span> Back to Sheet </button></a>
+                    <a target="_blank" href="{{ path('printList', { 'id': id }) }}"><button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-print"></span> Print </button></a>
+                </div>
+            </div>
+            <hr></hr>
+            <div class="container">
+            	<div class="well">
+                    {{ form_start(packingListForm, { 'attr': {'class': 'form-horizontal'} }) }}
+                    	<ul class="parts" data-prototype="{{ form_widget(packingListForm.parts.vars.prototype)|e('html_attr') }}" style="list-style-type: none;">
+                    		{% set cpt = 1 %}
+                        	{% for psPart in packingListForm.parts %}
+                        		<p>
+                            		<li style="list-style-type: none;">
+                            			<div class="col-md-2"><h4>Part {{ cpt }}</h4></div>
+                                		<div class="form-group">
+                                            {{ form_label(psPart.part_id, null, { 'label': ' ', 'label_attr':  {
+                                            'class': 'col-sm-4 control-label'
+                                            }}) }}
+                                            <div class="col-sm-10">
+                                                {{ form_errors(psPart.part_id) }}
+                                                {{ form_widget(psPart.part_id, {'attr':  {
+                                                'class': 'form-control'
+                                                }}) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            {{ form_label(psPart.quantity, null, { 'label_attr':  {
+                                            'class': 'col-sm-4 control-label'
+                                            }}) }}
+                                            <div class="col-sm-6">
+                                                {{ form_errors(psPart.quantity) }}
+                                                {{ form_widget(psPart.quantity, {'attr':  {
+                                                'class': 'form-control'
+                                                }}) }}
+                                            </div>
+                                        </div>
+                                    </li>
+                                </p>
+                                <hr></hr>
+                                {% set cpt = cpt + 1 %}
+                            {% endfor %}
+                        </ul>
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                {{ form_widget(packingListForm.save, {'attr':  {
+                                'class': 'btn btn-primary outline',
+                                'style':'display: block; margin: 0 auto;'
+                                }}) }}
+                            </div>
+                        </div>
+                    {{ form_end(packingListForm) }}
+                </div>
+            </div>
+    	</div>
+    </div>
+    <script src="/scripts/dynamic_parts_packinglist_form.js"></script> 
+{% endblock %}
+
+
+
+

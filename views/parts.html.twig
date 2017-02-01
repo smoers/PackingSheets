@@ -1,0 +1,155 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Parts{% endblock %}
+
+{% block content %}
+    {% if app.session.flashbag.peekAll|length > 0 %}
+        {% for type, messages in app.session.flashbag.all %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type ? type : '' }} fade-in">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+    <div class="jumbotron vertical-center">
+        <div class="container-fluid">
+            <div class="container"><h2>Parts <br>
+                    <small>Edition/Consultation</small></h2>
+                <div class="col-md-3 col-md-offset-9">
+                    <a href="{{ path('part_add') }}"><button type="button" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Create new part</button></a>
+                    {% if searchTag == 1 %}
+                		<hr></hr>
+                		<a href="{{ path('parts') }}"><button type="button" class="btn btn-secondary"><span class="glyphicon glyphicon-arrow-left"></span> Return to parts list </button></a>
+                    {% endif %}
+                </div>
+            </div>
+            <div id="exTab2" class="container">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#1" data-toggle="tab">Parts</a></li>
+                    <li><a href="#2" data-toggle="tab">Search</a></li>
+                </ul>
+                <div class="tab-content ">
+                    <div class="tab-pane active" id="1">
+                        {% if (parts is empty) %}
+                            <div class="panel panel-danger">
+                                <div class="panel-heading">Search Results</div>
+                                <div class="panel-body">No matching entry found - Please edit filters</div>
+                            </div>
+                        {% else %}
+                            <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Part Number</th>
+                                        <th>Description</th>
+                                        <th>HSCode</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for part in parts %}
+                                        <tr>
+                                            <td>{{ part.pn }}</td>
+                                            <td>{{ part.desc }}</td>
+                                            <td>
+                                                {% if part.hscode == "" %}
+                                                    N/A
+                                                {% else %}
+                                                    {{ part.hscode }}
+                                                {% endif %}
+                                            </td>
+                                            <td><a href="{{ path('part_edit', { 'id': part.id }) }}"><button type="button" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-pencil">
+                                                        </span></button></a>
+                                            </td>
+                                            <td><button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteConfirm{{ part.id }}">
+                                                    <span class="glyphicon glyphicon-remove"></span></button>
+                                            </td>
+                                        </tr>
+                                    <div class="modal fade" id="deleteConfirm{{ part.id }}" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <div class="panel panel-danger">
+                                                        <div class="panel-heading panel-height"><h4>Part Deletion : <small>{{ part.pn }}</small></h4></div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete this part ? <br/>
+                                                    It will be definitely removed from the database.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                    <a href="{{ path('part_delete', { 'id': part.id }) }}"><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfim{{ part.id }}">
+                                                            Delete </button></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    </div>
+                    <div class="tab-pane" id="2">
+                        <div class="container-fluid">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3>Search</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="container-fluid">
+                                        <section class="container">
+                                            <div class="container-page">
+                                            {{ form_start(partSearchForm, { 'attr': {'class': 'form-horizontal'} }) }}
+                                                <div class="form-group">
+                                                    {{ form_label(partSearchForm.pn, null, {  'label': 'Part Number', 'label_attr':  {
+                                                    	'class': 'col-sm-4 control-label'
+                                                    }}) }}
+                                                    <div class="col-sm-4">
+                                                        {{ form_errors(partSearchForm.pn) }}
+                                                        {{ form_widget(partSearchForm.pn, {'attr':  {
+                                                        'class': 'form-control'
+                                                        }}) }}
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    {{ form_label(partSearchForm.hscode, null, {  'label': 'HSCode', 'label_attr':  {
+                                                        	'class': 'col-sm-4 control-label'
+                                                    }}) }}
+                                                    <div class="col-sm-6">
+                                                        {{ form_errors(partSearchForm.hscode) }}
+                                                        {{ form_widget(partSearchForm.hscode, {'attr':  {
+                                                        'class': 'form-control'
+                                                        }}) }}
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    {{ form_label(partSearchForm.desc, null, {  'label': 'Description', 'label_attr':  {
+                                                        	'class': 'col-sm-4 control-label'
+                                                    }}) }}
+                                                    <div class="col-sm-6">
+                                                        {{ form_errors(partSearchForm.desc) }}
+                                                        {{ form_widget(partSearchForm.desc, {'attr':  {
+                                                        'class': 'form-control'
+                                                        }}) }}
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Search</button>
+                                                </div>
+                                            {{ form_end(partSearchForm) }}
+                                            </div>
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

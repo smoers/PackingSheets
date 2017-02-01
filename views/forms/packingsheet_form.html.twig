@@ -1,0 +1,145 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    {% if app.session.flashbag.peekAll|length > 0 %}
+        {% for type, messages in app.session.flashbag.all %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type ? type : '' }} fade-in">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+    
+	<div class="jumbotron vertical-center">
+        <div class="container-fluid">
+            <div class="container">
+            	<h2> Packing Sheet <br/>
+            	{% if packingSheet is defined %}
+            		{% if status is not same as ('create') %}
+            			<small> PS {{ packingSheet.ref}} </small></h2>
+            		{% endif %}
+                    <div class="col-md-4 col-md-offset-8 text-right">
+                    	{% if status is not same as ('create') %}
+	                    	<a href="{{ path('sheetList', { 'id': id }) }}"><button type="button" class="btn btn-list"><span class="glyphicon glyphicon-list-alt"></span> List </button></a>
+                        	<a href="{{ path('packings', { 'id': id }) }}"><button type="button" class="btn btn-packings"><span class="glyphicon glyphicon-inbox"></span> Packings</button></a>
+                        	<hr/>
+                    	{% endif %}
+                        {% if status is same as ('create') %}
+                    		<a href="{{ path('sheets') }}"><button type="button" class="btn btn-secondary"><span class="glyphicon glyphicon-arrow-left"></span> Cancel </button></a>		
+                    	{% endif %}
+                    	{% if status is same as ('details') and not signed %}
+                        	<a href="{{ path('printOptions', { 'psId': id }) }}"><button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-print"></span> Print</button></a>
+                    	{% endif %}
+                        {% if status is same as ("details") %}
+                        	<a href="{{ path('sheet', { 'id': packingSheet.id, 'status': 'edit' }) }}"><button type="button" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Edit</button></a>
+                        {% endif %}
+                        {% if status is same as ("edit") %}
+                        	<a href="{{ path('sheet', { 'id': packingSheet.id, 'status': 'details' }) }}"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-zoom-in"></span> Details</button></a>
+                        {% endif %}
+                        {% if status is not same as ('create') %}
+                        	<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirm{{ packingSheet.id }}"><span class="glyphicon glyphicon-remove"></span> Delete</button> 
+                    	{% endif %}
+                    </div>
+                    <div class="modal fade" id="deleteConfirm{{ packingSheet.id }}" role="dialog">
+                    	<div class="modal-dialog">
+                        	<div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <div class="panel panel-danger">
+                                        <div class="panel-heading panel-height"><h4>Packing Sheet Deletion : {{ packingSheet.ref }}</small></h4></div>
+                                    </div>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete this Packing Sheet ? <br/>
+                                    It will be definitely removed from the database. Included Packings will be removed too.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                    <a href="{{ path('packingsheet_delete', { 'id': packingSheet.id }) }}"><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfim{{ packingSheet.id }}">
+                                            Delete </button></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                {% else %}
+                	<div class="col-md-4 col-md-offset-8 text-right">
+                   		<a href="{{ path('sheets') }}"><button type="button" class="btn btn-secondary"><span class="glyphicon glyphicon-arrow-left"></span> Cancel </button></a>		
+                    </div>
+                {% endif %}
+            </div>
+            <hr/>
+            <div class="container">
+            	{% if status is same as ('edit') %}
+            		<div class="panel panel-warning">
+              			<div class="panel-heading"><h4>Edition</h4></div>
+            		</div>
+            	{% elseif status is same as ('details')%}
+            		<div class="panel panel-info">
+              			<div class="panel-heading"><h4>Details</h4></div>
+            		</div>
+            	{% elseif status is same as ('create') %}
+            		<div class="panel panel-success">
+              			<div class="panel-heading"><h4>Creation</h4></div>
+            		</div>
+            	{% endif %}
+            	<ul class="nav nav-tabs">
+                    <li class="active"><a href="#1a" data-toggle="tab">Informations</a></li>
+                    <li><a href="#1b" data-toggle="tab">Contacts</a></li>   
+                    <li><a href="#1c" data-toggle="tab">Physical Specs</a></li>
+                    {% if status is same as ('details') %}<li><a href="#1d" data-toggle="tab">Packings</a></li>{% endif %}
+                </ul>
+                {{ form_start(packingSheetForm, { 'attr': {'class': 'form-horizontal'} }) }}
+                <div class="tab-content ">
+                	<div class="tab-pane active" id="1a">
+                        <div class="container">
+            				<div class="well">
+     					        {% include 'forms/packingSheet_subforms/packingSheet_general_infos.html.twig' %}
+     					    </div>
+     					</div>
+     				</div>
+                    <div class="tab-pane" id="1b">
+                        <div class="container">
+            				<div class="well">
+     					        {% include 'forms/packingSheet_subforms/packingSheet_contacts.html.twig' %}
+     					    </div>
+     					</div>
+     				</div>
+     				<div class="tab-pane" id="1d">
+                        <div class="container">
+            				<div class="well">
+     					        {% include 'forms/packingSheet_subforms/packingSheet_packings.html.twig' %}
+     					    </div>
+     					</div>
+     				</div>
+     				<div class="tab-pane" id="1c">
+                        <div class="container">
+            				<div class="well">
+     					        {% include 'forms/packingSheet_subforms/packingSheet_phys_specs.html.twig' %}
+     					    </div>
+     					</div>
+     				</div>
+     			</div>
+                <hr/>
+                {% if read_only is empty %}
+                    <div class="form-group">
+                        <div class="col-sm-4">
+                            {{ form_widget(packingSheetForm.save, {'attr':  {
+                            'class': 'btn btn-primary outline',
+                            'style':'display: block; margin: 0 auto;'
+                            }}) }}
+                        </div>
+                    </div>
+                {% endif %}
+                {{ form_end(packingSheetForm) }}
+    		</div>
+		</div>
+	</div>
+{% endblock %}
+
+
+
+

@@ -1,0 +1,200 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    {% if app.session.flashbag.peekAll|length > 0 %}
+        {% for type, messages in app.session.flashbag.all %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type ? type : '' }} fade-in">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+    
+    <div class="jumbotron vertical-center">
+        <div class="container-fluid">
+            <div class="container"><h2>Packings <br>
+                    <small>PS {{ psRef }} </small></h2>
+                <div class="col-md-3 col-md-offset-9 text-right">
+                	<a href="{{ path('part_add') }}"><button type="button" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Create a new Part </button></a>
+                    <hr/>
+                    <a href="{{ path('packings', { 'id': id }) }}"><button type="button" class="btn btn-secondary"><span class="glyphicon glyphicon-arrow-left"></span> Back to Packings </button></a>
+                </div>
+            </div>
+            <hr/>
+            <div class="container">
+            	{% if status is same as ('create') %}
+                	<div class="panel panel-success">
+                  		<div class="panel-heading"><h4>Creation</h4></div>
+                	</div>
+            	{% elseif status is same as ('edit') %}
+            		<div class="panel panel-warning">
+              		<div class="panel-heading"><h4> Edition <br/></h4></div>
+            	</div>
+            	{% endif %}
+            	<div class="well">
+                    {{ form_start(packingForm, { 'attr': {'class': 'form-horizontal'} }) }}
+                    	<div class="well">
+                    		<p><h4><u>Packing</u></h4><p>
+                        	<div class="form-group">
+                                {{ form_label(packingForm.M1, null, {  'label': 'M1', 'label_attr':  {
+                                'class': 'col-sm-4 control-label'
+                                }}) }}
+                                <div class="col-sm-6">
+                                    {{ form_errors(packingForm.M1) }}
+                                    {{ form_widget(packingForm.M1, {'attr':  {
+                                    'class': 'form-control'
+                                    }}) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(packingForm.M2, null, {  'label': 'M2', 'label_attr':  {
+                                'class': 'col-sm-4 control-label'
+                                }}) }}
+                                <div class="col-sm-6">
+                                    {{ form_errors(packingForm.M2) }}
+                                    {{ form_widget(packingForm.M2, {'attr':  {
+                                    'class': 'form-control'
+                                    }}) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(packingForm.M3, null, {  'label': 'M3', 'label_attr':  {
+                                'class': 'col-sm-4 control-label'
+                                }}) }}
+                                <div class="col-sm-6">
+                                    {{ form_errors(packingForm.M3) }}
+                                    {{ form_widget(packingForm.M3, {'attr':  {
+                                    'class': 'form-control'
+                                    }}) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(packingForm.netWeight, null, {  'label': 'Net Weight', 'label_attr':  {
+                                'class': 'col-sm-4 control-label'
+                                }}) }}
+                                <div class="col-sm-6">
+                                    {{ form_errors(packingForm.netWeight) }}
+                                    {{ form_widget(packingForm.netWeight, {'attr':  {
+                                    'class': 'form-control'
+                                    }}) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(packingForm.grossWeight, null, { 'label': 'Gross Weight', 'label_attr':  {
+                                'class': 'col-sm-4 control-label'
+                                }}) }}
+                                <div class="col-sm-6">
+                                    {{ form_errors(packingForm.grossWeight) }}
+                                    {{ form_widget(packingForm.grossWeight, {'attr':  {
+                                    'class': 'form-control'
+                                    }}) }}
+                                </div>
+                            </div>
+                       		<div class="form-group">
+                                {{ form_label(packingForm.packType_id, null, { 'label': 'Type', 'label_attr':  {
+                                'class': 'col-sm-4 control-label'
+                                }}) }}
+                                <div class="col-sm-6">
+                                    {{ form_errors(packingForm.packType_id) }}
+                                    {{ form_widget(packingForm.packType_id, {'attr':  {
+                                    'class': 'form-control'
+                                    }}) }}
+                                </div>
+                            </div>
+                        </div>
+                    	<ul class="parts" data-prototype="{{ form_widget(packingForm.parts.vars.prototype)|e('html_attr') }}" style="list-style-type: none;">
+                    		{% set cptPart = 1 %}
+                            {% if packingForm.parts is empty %}
+                            	<div class="panel panel-warning">
+                                  <div class="panel-heading">No parts found for this Packing</div>
+                                </div>
+                            {% else %}
+                            	{% for psPart in packingForm.parts %}
+                            		<p>
+                                		<li style="list-style-type: none;">
+                                			<div class="col-md-2"><h4>Part {{ cptPart }}</h4></div>
+                                            {% set cptPart = cptPart + 1 %}
+                                    		<div class="form-group">
+                                                {{ form_label(psPart.part_id, null, { 'label': ' ', 'label_attr':  {
+                                                'class': 'col-sm-4 control-label'
+                                                }}) }}
+                                                <div class="col-sm-10">
+                                                    {{ form_errors(psPart.part_id) }}
+                                                    {{ form_widget(psPart.part_id, {'attr':  {
+                                                    'class': 'form-control'
+                                                    }}) }}
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                {{ form_label(psPart.quantity, null, { 'label_attr':  {
+                                                'class': 'col-sm-4 control-label'
+                                                }}) }}
+                                                <div class="col-sm-6">
+                                                    {{ form_errors(psPart.quantity) }}
+                                                    {{ form_widget(psPart.quantity, {'attr':  {
+                                                    'class': 'form-control'
+                                                    }}) }}
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                {{ form_label(psPart.origin, null, { 'label_attr':  {
+                                                'class': 'col-sm-4 control-label'
+                                                }}) }}
+                                                <div class="col-sm-6">
+                                                    {{ form_errors(psPart.origin) }}
+                                                    {{ form_widget(psPart.origin, {'attr':  {
+                                                    'class': 'form-control'
+                                                    }}) }}
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                {{ form_label(psPart.serial, null, { 'label': 'Part Serial', 'label_attr':  {
+                                                'class': 'col-sm-4 control-label'
+                                                }}) }}
+                                                <div class="col-sm-6">
+                                                    {{ form_errors(psPart.serial) }}
+                                                    {{ form_widget(psPart.serial, {'attr':  {
+                                                    'class': 'form-control'
+                                                    }}) }}
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                {{ form_label(psPart.price, null, { 'label_attr':  {
+                                                'class': 'col-sm-4 control-label'
+                                                }}) }}
+                                                <div class="col-sm-6">
+                                                    {{ form_errors(psPart.price) }}
+                                                    {{ form_widget(psPart.price, {'attr':  {
+                                                    'class': 'form-control'
+                                                    }}) }}
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </p>
+                                    <hr></hr>
+                                {% endfor %}
+                        	{% endif %}
+                        </ul>
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                {{ form_widget(packingForm.save, {'attr':  {
+                                'class': 'btn btn-primary outline',
+                                'style':'display: block; margin: 0 auto;'
+                                }}) }}
+                            </div>
+                        </div>
+                    {{ form_end(packingForm) }}
+                </div>
+            </div>
+    	</div>
+    </div>  
+    <script src="/scripts/dynamic_parts_packing_form.js"></script> 
+{% endblock %}
+
+
+
+

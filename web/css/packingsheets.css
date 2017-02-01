@@ -1,0 +1,261 @@
+body {
+    padding-top: 50px;
+}
+
+.footer {
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    text-align: center;
+}
+
+li .configSelec {
+    direction: rtl;
+    line-height: 50px;
+}
+
+
+.container-fluid {
+    border-radius: 20px;
+    text-align: center;
+}
+
+.container-text-left {
+    border-radius: 20px;
+    text-align: left;
+}
+
+.navbar .navbar-nav {
+  display: inline-block;
+  float: none;
+  vertical-align: top;
+}
+
+.navbar .navbar-collapse {
+  text-align: center;
+}
+
+.navbar-nav li a {
+ line-height: 50px;
+}
+
+.navbar-brand {
+  line-height: 50px;
+}
+
+.carousel {
+  border: 2px outset lightgrey;
+}
+
+.jumbotron {
+  border: 1px solid lightgrey;
+}
+ .tab-content {
+   border-top: 1px solid #ccc;
+   padding-top: 10px;
+   text-align: center;
+ }
+
+ .carousel-inner > .item > img, .carousel-inner > .item > a > img {
+    width: 100%;
+}
+
+input[readonly].form-control {
+  background-color: #fff;
+}
+
+textarea[readonly].form-control {
+  background-color: #fff;
+}
+
+.form-control::-webkit-input-placeholder {
+    color: black;
+}
+
+.form-control::-moz-input-placeholder {
+    color: black;
+}
+
+.form-control::-ms-input-placeholder {
+    color: black;
+}
+
+hr {
+   display: block;
+   position: relative;
+   padding: 0;
+   margin: 8px auto;
+   height: 0;
+   width: 100%;
+   max-height: 0;
+   font-size: 1px;
+   line-height: 0;
+   clear: both;
+   border: none;
+   border-top: 1px solid #aaaaaa;
+   border-bottom: 1px solid #ffffff;
+}
+
+.panel-height {
+  height: 60px;
+  line-height: 30px;
+}
+
+.panel-height-sub {
+  height: 60px;
+  line-height: 10px;
+}
+
+.alert {
+  padding-top: 8px;
+  vertical-align: center;
+  text-align: center;
+  height: 50px;
+}
+
+h2 {
+    font-size: 25px;
+}
+
+:focus {outline:none;}
+::-moz-focus-inner {border:0;}
+
+.bootstrap-select.btn-group .dropdown-menu {
+    z-index: 2000;
+}
+.bootstrap-select.btn-group .dropdown-menu.inner {
+    position: static;
+}
+.modal { overflow: visible; }
+.modal-body { overflow-y: visible !important; }
+
+.spinner {
+  width: 100px;
+}
+.spinner input {
+  text-align: right;
+}
+.input-group-btn-vertical {
+  position: relative;
+  white-space: nowrap;
+  width: 1%;
+  vertical-align: middle;
+  display: table-cell;
+}
+.input-group-btn-vertical > .btn {
+  display: block;
+  float: none;
+  width: 100%;
+  max-width: 100%;
+  padding: 8px;
+  margin-left: -1px;
+  position: relative;
+  border-radius: 0;
+}
+.input-group-btn-vertical > .btn:first-child {
+  border-top-right-radius: 4px;
+}
+.input-group-btn-vertical > .btn:last-child {
+  margin-top: -2px;
+  border-bottom-right-radius: 4px;
+}
+.input-group-btn-vertical i{
+  position: absolute;
+  top: 0;
+  left: 4px;
+}
+
+
+/*.btn.outline {
+	background: none;
+	padding: 6px 12px;
+}*/
+
+.btn-success.outline {
+	border: 2px solid #5cb85c;
+	color: #5cb85c;
+	background: none;
+	padding: 3px 12px;
+}
+
+.btn-primary.outline {
+	border: 2px solid #428bca;
+	color: #428bca;
+	background: none;
+	padding: 3px 50px;
+}
+
+.btn-danger.outline {
+	border: 2px solid #d9534f;
+	color: #d9534f;
+	background: none;
+	padding: 3px 12px;
+}
+
+.btn-warning.outline {
+	border: 2px solid #ffbb33;
+	color: #ffbb33;
+	background: none;
+	padding: 3px 12px;
+}
+
+.btn-secondary.outline {
+	border: 2px solid #3949ab;
+	color: #3949ab;
+	background: none;
+	padding: 3px 12px;
+}
+
+.p-text-left {
+  text-align:left;
+}
+
+.btn-packings,
+.btn-packings:hover,
+.btn-packings:active,
+.btn-packings:visited,
+.btn-packings:focus {
+    background-color: #2BBBAD;
+    border-color: #26a69a;
+    color: #ffffff;
+}
+
+.btn-list,
+.btn-list:hover,
+.btn-list:active,
+.btn-list:visited,
+.btn-list:focus {
+    background-color: #9ccc65;
+    border-color: #8bc34a;
+    color: #ffffff;
+}
+
+.btn-sheet,
+.btn-sheet:hover,
+.btn-sheet:active,
+.btn-sheet:visited,
+.btn-sheet:focus {
+    background-color: #64b5F6;
+    border-color: #42a5f5;
+    color: #ffffff;
+}
+
+.panel-packings {
+background: #26a69a; color: #ffffff; }
+
+.panel-list {
+background: #8bc34a; color: #ffffff; }
+
+select[readonly]{
+    background: #eee;
+    cursor:no-drop;
+}
+
+input[readonly]{
+    background: #eee;
+    cursor:no-drop;
+}
+
+textarea[readonly]{
+    background: #eee;
+    cursor:no-drop;
+}

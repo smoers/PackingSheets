@@ -1,0 +1,194 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Contacts{% endblock %}
+
+{% block content %}
+    {% if app.session.flashbag.peekAll|length > 0 %}
+        {% for type, messages in app.session.flashbag.all %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type ? type : '' }} fade-in">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+    <div class="jumbotron vertical-center">
+        <div class="container-fluid">
+            <div class="container"><h2>Contacts <br>
+                    <small>Edition/Consultation</small></h2>
+                <div class="col-md-3 col-md-offset-9">
+                    <a href="{{ path('contact_add') }}"><button type="button" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add new contact</button></a>
+                    <hr/>
+            		<div class="form-group">
+                    	<select id="codesComplete" class="form-control">
+                        	{% for code in codesComplete %}
+                          		<option value="{{ code.id }}">{{ code.label }}</option>
+                          	{% endfor %}
+                		</select>
+                		<button type="button" class="btn btn-secondary" id="btnFilter"><span class="glyphicon glyphicon-zoom-in"></span> Filter Company</button>
+                		<script>
+                            var $btn = $('#btnFilter');
+                            $btn.click (function() {
+                           	var $selectedId = ($('#codesComplete').val());
+                           	var url = $(location).attr('href');
+
+                           	url = url.replace(/\d+/g,'');
+
+                           	if(url.slice(-1) !== "/"){
+                               	url += "/";
+                            }
+                           	window.location.href = url+$selectedId;
+							});
+                		</script> 
+                	</div>
+                </div>
+            </div>
+            <div id="exTab2" class="container">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#1" data-toggle="tab">Contacts</a></li>
+                    <li><a href="#2" data-toggle="tab">Search</a></li>
+                </ul>
+                <div class="tab-content ">
+                    <div class="tab-pane active" id="1">
+                        {% if (codes is empty) %}
+                            <div class="panel panel-warning">
+                                <div class="panel-heading">Search Results</div>
+                                <div class="panel-body">No matching entry found - Please edit filters</div>
+                            </div>
+                        {% else %}
+                            <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Mail</th>
+                                        <th>Phone Number</th>
+                                        <th>Fax Number</th>
+                                        <th>Address</th>
+                                        <th>Company</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                	{% if (codes|length) == 1 %}
+                                		{% set codeArray = codes|first %}
+                                	{% else %}
+                                		{% set codeArray = codes %}
+                                	{% endif %}     	
+                                	{% for code in codes %}
+                                		{% for address in code.addresses %}
+                                            {% for contact in address.contacts %}
+                                            <tr>
+                                                <td>{{ contact.name }}</td>
+                                                <td>{{ contact.mail }}</td>
+                                                <td>{{ contact.phoneNr }}</td>
+                                                <td>{{ contact.faxNr }}</td>
+                                                <td>{{ address.label }}</td>
+                                                <td>{{ code.label }}</td>
+                                                <td><a href="{{ path('contact_edit', { 'id': contact.id }) }}"><button type="button" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-pencil"></span>
+                                                        </button></a></td>
+                                                <td><button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteConfirm{{ contact.id }}">
+                                                        <span class="glyphicon glyphicon-remove"></span></button>
+                                                </td>
+                                            </tr>
+                                            <div class="modal fade" id="deleteConfirm{{ contact.id }}" role="dialog">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                            <div class="panel panel-danger">
+                                                                <div class="panel-heading panel-height"><h4>Contact Deletion : <small>{{ contact.name }}</small></h4></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Are you sure you want to delete this contact ? <br/>
+                                                            It will be definitely removed from the database.
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                            <a href="{{ path('contact_delete', { 'id': contact.id }) }}"><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfim{{ contact.id }}">
+                                                                    Delete </button></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    </div>
+                    <div class="tab-pane" id="2">
+                        <div class="container-fluid">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3>Search</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="container-fluid">
+                                    {{ form_start(contactSearchForm, { 'attr': {'class': 'form-horizontal'} }) }}
+                                        <div class="form-group">
+                                            {{ form_label(contactSearchForm.name, null, {  'label': 'Name', 'label_attr':  {
+                                            	'class': 'col-sm-4 control-label'
+                                            }}) }}
+                                            <div class="col-sm-6">
+                                                {{ form_errors(contactSearchForm.name) }}
+                                                {{ form_widget(contactSearchForm.name, {'attr':  {
+                                                'class': 'form-control'
+                                                }}) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            {{ form_label(contactSearchForm.mail, null, {  'label': 'Mail', 'label_attr':  {
+                                            	'class': 'col-sm-4 control-label'
+                                            }}) }}
+                                            <div class="col-sm-6">
+                                                {{ form_errors(contactSearchForm.mail) }}
+                                                {{ form_widget(contactSearchForm.mail, {'attr':  {
+                                                'class': 'form-control'
+                                                }}) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                {{ form_label(contactSearchForm.phoneNr, null, {  'label': 'Phone', 'label_attr':  {
+                                                	'class': 'col-sm-4 control-label'
+                                                }}) }}
+                                                <div class="col-sm-6">
+                                                    {{ form_errors(contactSearchForm.phoneNr) }}
+                                                    {{ form_widget(contactSearchForm.phoneNr, {'attr':  {
+                                                    'class': 'form-control'
+                                                    }}) }}
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                {{ form_label(contactSearchForm.faxNr, null, {  'label': 'Fax', 'label_attr':  {
+                                                	'class': 'col-sm-4 control-label'
+                                                }}) }}
+                                                <div class="col-sm-6">
+                                                    {{ form_errors(contactSearchForm.faxNr) }}
+                                                    {{ form_widget(contactSearchForm.faxNr, {'attr':  {
+                                                    'class': 'form-control'
+                                                    }}) }}
+                                                </div>
+                                            </div>
+                                        </div>                             
+                                        <div class="form-group">
+                                            <div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+                                                <button type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-search"></span> Search </button>
+                                            </div>
+                                        </div>
+                                   {{ form_end(contactSearchForm) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
